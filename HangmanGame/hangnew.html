@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+	<html>
+  <head>
+  
+  <style>
+  h2
+  {
+  	font-family: URBAN JUNGLE ;
+  	font-size:40px;
+
+  }
+
+  </style>
+ 
+  <title>Hangman</title>
+ <script src="jquery-1.10.2.min.js"></script>
+  <script type="text/javascript"language="JavaScript">
+            
+  
+  var NumberOfChances;
+  var theWord = "",oldString="";
+  var currentGuessed = "";
+  var value="";
+  //Array of 50 movies
+  var words = new Array();
+  words[0]="RAANJHANAA";
+  words[1]="KABHI KHUSHI KABHIE GHAM";
+  words[2]="GOLMAAL";
+  words[3]="KRRISH";
+  words[4]="TALAASH";
+  words[5]="KAL HO NA HO";
+  words[6]="WANTED";
+  words[7]="TUM MILE";
+  words[8]="3 IDIOTS";
+  words[9]="SLUMDOG MILLIONAIRE";
+  words[10]="GRAND MASTI";
+  words[11]="BARFI";
+  words[12]="SATYAGRAHA";
+  words[13]="GURU";
+  words[14]="DABANGG";
+  words[15]="JAB TAK HE JAAN";
+  words[16]="MY NAME IS KHAN";
+  words[17]="OM SHANTI OM";
+  words[18]="CROOK";
+  words[19]=" EVIL RETURNS";
+  words[20]="PATHSHALA";
+  words[21]="JAB WE MET";
+  words[22]="MURDER ";
+ words[23]="KAHO NA PYAAR HE";
+  words[24]="EK THI DAAYAN";
+  words[25]="BESHARAM";
+  words[26]="VEERZARA";
+  words[27]="ONCE UPON A TIME IN MUMBAI";
+  words[28]="ZILA GHAZIABAD";
+  words[29]="KAHAANI";
+  words[30]="SON OF SARDAAR";
+  words[31]="SINGH IS KINGH";
+  words[32]="AAJA NACHLE";
+  words[33]="OH MY GOD ";
+  words[34]="STUDENT OF THE YEAR";
+  words[35]="COCKTAIL";
+  words[36]="JANNAT ";
+ words[37]="VICKY DONOR";
+  words[38]="NAUTANKI SAALA";;
+  words[40]="MY NAME IS KHAN";
+  words[41]="AGNEEPATH";
+  words[42]="BOL BACHCHAN";
+  words[43]="NEWYORK";
+  words[44]="AASHIQUI ";
+  words[45]="HOUSEFULL";
+  words[46]="LOVESTORY";
+  words[47]="BLOOD MONEY";
+  words[48]="JODHA AKBAR";
+  words[49]="ISHAQZAADE";
+  words[50]="HEROINE";
+  
+  
+  
+ // bollywood hangman series of images
+  var image = new Array();
+  image[0] = '<img src="image0.jpg" align ="left" >';
+  image[1] = '<img src="image1.jpg" align ="left" width="415" height="496">';
+  image[2] = '<img src="image2.jpg" align ="left" width="415" height="496">';
+  image[3] = '<img src="image3.jpg" align ="left" width="415" height="496">';
+  image[4] = '<img src="image4.jpg" align ="left" width="415" height="496">';
+  image[5] = '<img src="image5.jpg" align ="left" width="415" height="496">';
+  image[6] = '<img src="image6.jpg" align ="left" width="415" height="496">';
+ 
+  NumberOfChances = image.length;
+  
+  
+  //swap the images for the hangman, start with image[0], then replace the image with each wrong guess, 6 chances
+  function swap(image)
+  {
+  document.getElementById("images").src =image+".jpg";
+  
+  }
+  // an array to store the letters guessed if i can not figure out how to disable onclick of letters in form,
+  //want to highlight them red to so the player sees that they already choose that letter
+  var usedLetters = new Array();
+  
+ 
+  
+  
+  // creating the random pick of the secret word out of 50 choices 
+  function secretWord()
+  {
+ theWord = words[Math.floor(Math.random()*51)]; 
+  for (i=0; i<theWord.length; i++)
+  {
+  if(theWord.charAt(i)=='A'||theWord.charAt(i)=='E'||theWord.charAt(i)=='I'||theWord.charAt(i)=='O'||theWord.charAt(i)=='U')
+  currentGuessed=currentGuessed+theWord.charAt(i);
+else if(theWord.charAt(i)==' ')
+	currentGuessed=currentGuessed+theWord.charAt(i);
+else
+  currentGuessed = currentGuessed + "*";
+  
+  }
+  document.getElementById("secretWord").value = currentGuessed;
+  }
+  
+  //the process that starts the game and resets it when the player chooses to play again 
+  function gameProcess()
+  {
+  currentGuessed ="";
+  secretWord();
+  NumberOfChances=0;
+  swap("image0");
+ 
+ document.getElementById("lives").value = NumberOfChances;
+  startImage = image[0];
+  } 
+  
+  
+  //this is what happens when the player takes a turn 
+  function turn(letterGuessed)
+  {
+ 
+  value = oldString = "";
+  var correctGuess = false;
+  for (i=0; i<theWord.length; i++)
+  {
+  
+  if (theWord.charAt(i) == letterGuessed)
+  {
+  value  = value + letterGuessed;
+  currentGuessed = currentGuessed.replace(oldString + "*",value);
+  oldString = value;
+  correctGuess=true;
+  }
+  else
+  {
+  if(currentGuessed.charAt(i) == "*")
+  {
+  value = value + '*';
+  oldString = oldString + "*";
+  }
+  else
+  {
+  value = value + currentGuessed.charAt(i);
+  oldString = oldString + currentGuessed.charAt(i);
+  }
+  }
+  } 
+  if (!correctGuess)
+  {
+  NumberOfChances++;
+  swap("image"+NumberOfChances);
+  if (NumberOfChances==6)
+  {
+  	swap("image"+NumberOfChances);
+  alert("You Lost!");
+  document.getElementById("secretWord").value = theWord;
+  theWord = "";
+  currentGuessed = "";
+  }
+
+  document.getElementById("lives").value = NumberOfChances;
+  }
+  win();
+  }
+  
+  function win()
+  {
+  
+  var winCount = 0;
+  for(var i = 0;i<theWord.length;i++)
+  {
+  if(currentGuessed.charAt(i) == "*")
+  {
+  winCount++;
+  }
+  document.getElementById("secretWord").value = currentGuessed;
+  }
+  if(winCount == 0 && currentGuessed != "")
+  {
+  alert("yay, you win!");
+  }
+  
+  } 
+ 
+  
+  </script>
+  <script>
+   $(document).ready(function(){
+   	for(i=0;i<25;i++)
+  $("buttoni").click(function(){
+    $(this).hide();
+  });
+});
+</script>
+<!---
+<script src="audio-player.js"></script> 
+            AudioPlayer.setup("button-4.mp3", { width: 290});
+             function moo() {
+                AudioPlayer.embed("player", {soundFile: "button.mp3", autostart: 'yes'});  
+            }
+            </script>
+            -->
+  </head>
+  
+  <body style="
+    margin-left: 0px;
+    margin-top: 0px;
+">
+  
+ <!--need to use Div tags --> 
+ <div id="container" style="margin-top: 0px;width:1350px;height:750px;background-image:url('mt4.jpg');background-size:cover;">
+ <div id="audio" style="width: 20px;height: 20px;position: 400px;position: relative;left: 1000px;top: 90px;">
+  <audio controls="" autoplay="" style="
+    width: 39px;
+">
+  <source src="kalimba.mp3" type="audio/mpeg">
+  </audio>
+  </div>
+<div id="header" style="height:75px;">
+<h1 style="margin-bottom:0;text-align:center;font-size:75px;font-family:URBAN JUNGLE;color:white;">JAB TAK HAI JAAN</h1></div>
+
+<br><br><br>
+
+
+ 
+
+  
+  <!--hangman pic displaying first image, need to swap images with each wrong guess -->
+  
+  
+  <!-- form for guessing letter,display secret word, display number of guesses left, restart, end game -->
+  <form name="userGuessForm" id="form1">
+  <div id="Image"><img src="image0.jpg" align="left" width="315" height="396" id="images"></div>
+  <div id="wordDisplay"></div>
+ 
+<div id="alpha" style="float:left;width:600px;height:600px;margin-left:300px;">
+<div id="hehe" style="float:left;">
+<h2 style="color:white">GU ESS THE MOVI E !!!!</h2>
+  
+  <br><input id="secretWord" style="width:200px;height:40px;border-radius:30px;padding-left:5px;;" type="text" value="guess movie">
+  <br>
+  <br>
+  <div id="player" <="" div="">
+  <div id="player"></div>
+  
+ 
+  <input id="letters" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="A" value="A" onclick="turn('A');"><!-- as player guess wrong letter change to red and make unusable so player can not choose the letter again-->
+  <input id="Button1" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="B" value="B" onclick="turn('B');">
+  <input id="Button2" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="C" value="C" onclick="turn('C');">
+  <input id="Button3" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="D" value="D" onclick="turn('D');">
+  <input id="Button4" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="E" value="E" onclick="turn('E');">
+  <input id="Button5" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="F" value="F" onclick="turn('F');">
+  <input id="Button6" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="G" value="G" onclick="turn('G');">
+  <input id="Button7" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="H" value="H" onclick="turn('H');">
+  <input id="Button8" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="i" value="I" onclick="turn('I');">
+  <input id="Button9" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="I" value="J" onclick="turn('J');">
+  <input id="Button10" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="K" value="K" onclick="turn('K');">
+  <input id="Button11" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="L" value="L" onclick="turn('L');">
+  <input id="Button12" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="M" value="M" onclick="turn('M');">
+  <input id="Button13" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="N" value="N" onclick="turn('N');">
+  <input id="Button14" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="O" value="O" onclick="turn('O');">
+  <input id="Button15" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="P" value="P" onclick="turn('P');">
+  <input id="Button16" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="Q" value="Q" onclick="turn('Q');">
+  <input id="Button17" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="R" value="R" onclick="turn('R');">
+  <input id="Button18" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="S" value="S" onclick="turn('S');">
+  <input id="Button19" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="T" value="T" onclick="turn('T');">
+  <input id="Button20" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="U" value="U" onclick="turn('U');">
+  <input id="Button21" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:10px;" type="button" name="V" value="V" onclick="turn('V');">
+  <input id="Button22" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:70px;" type="button" name="W" value="W" onclick="turn('W');">
+  <input id="Button23" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:30px;" type="button" name="X" value="X" onclick="turn('X');">
+  <input id="Button24" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:20px;" type="button" name="Y" value="Y" onclick="turn('Y');">
+  <input id="Button25" style="background-color:#CD853F;border-radius:15px;font-size:30px;margin-left:20px;" type="button" name="Z" value="Z" onclick="turn('Z') onClick=" moo();"=""><br><br>
+ <span style="color:white;font-family:URBAN JUNGLE;font-size:25px;"> Number of Tries (6)</span>: <input id="lives" style="font-size:25px"style="width:60px;height:60px;"" type="text" value="0" onfocus="lives.blur();" size="2"> 
+  <input type="button" style="font-size:25px;border-radius:15px;" name="submit" value=" Start " onclick="gameProcess()">
+  </div>
+ </div>
+ 
+  
+ 
+ </div></form>
+ 
+ 
+ 
+</div></body>
+ </html>
